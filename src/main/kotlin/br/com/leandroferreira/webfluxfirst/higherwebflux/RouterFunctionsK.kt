@@ -5,6 +5,8 @@ import arrow.effects.typeclasses.Async
 import org.springframework.web.reactive.function.server.RequestPredicate
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
+import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 
 fun <T : ServerResponse> createRouteK(
     predicate: RequestPredicate,
@@ -20,3 +22,19 @@ fun <T : ServerResponse> createRouteK(
         }
     }
 
+typealias HandlerFn<F, T> = (async: Async<F>, request: ServerRequest) -> Kind<F, T>
+typealias RouterFn<F, T> = (async: Async<F>, request: ServerRequest) -> Kind<F, HandlerFn<F, T>>
+
+fun <F, T : ServerResponse> createRouteKFn(
+    predicate: RequestPredicate,
+    handle: HandlerFn<F, T>
+) : RouterFn<F, T> {
+    return { async, request ->
+        if(predicate.test(request)) {
+            async.just(handle)
+        } else {
+            async.raiseError(IllegalStateException("This route doesn't exist!"))
+        }
+    }
+
+}
