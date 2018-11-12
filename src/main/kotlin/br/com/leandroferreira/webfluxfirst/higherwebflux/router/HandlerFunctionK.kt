@@ -1,4 +1,4 @@
-package br.com.leandroferreira.webfluxfirst.higherwebflux
+package br.com.leandroferreira.webfluxfirst.higherwebflux.router
 
 import arrow.Kind
 import arrow.effects.typeclasses.Async

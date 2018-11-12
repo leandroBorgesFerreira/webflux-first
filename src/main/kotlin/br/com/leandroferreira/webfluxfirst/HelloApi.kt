@@ -2,10 +2,13 @@ package br.com.leandroferreira.webfluxfirst
 
 import arrow.Kind
 import arrow.effects.typeclasses.Async
-import br.com.leandroferreira.webfluxfirst.higherwebflux.HandlerFunctionK
-import br.com.leandroferreira.webfluxfirst.higherwebflux.RouterFn
-import br.com.leandroferreira.webfluxfirst.higherwebflux.createRouteK
-import br.com.leandroferreira.webfluxfirst.higherwebflux.createRouteKFn
+import br.com.leandroferreira.webfluxfirst.higherwebflux.body
+import br.com.leandroferreira.webfluxfirst.higherwebflux.core.ReactiveHttpOutputMessage
+import br.com.leandroferreira.webfluxfirst.higherwebflux.core.ServerResponseK
+import br.com.leandroferreira.webfluxfirst.higherwebflux.router.HandlerFunctionK
+import br.com.leandroferreira.webfluxfirst.higherwebflux.router.RouterFn
+import br.com.leandroferreira.webfluxfirst.higherwebflux.router.createRouteK
+import br.com.leandroferreira.webfluxfirst.higherwebflux.router.createRouteKFn
 import org.springframework.web.reactive.function.server.HandlerFunction
 import org.springframework.web.reactive.function.server.RequestPredicates.GET
 import org.springframework.web.reactive.function.server.RouterFunctions
@@ -23,9 +26,12 @@ fun hiRoutesK() = createRouteK(GET(BASE_PATH), object : HandlerFunctionK<ServerR
         getHello() //Return something valid here!
 })
 
-fun <F> hiRoutesKFn(): RouterFn<F, ServerResponse> = createRouteKFn(GET(BASE_PATH), { async, request ->
-    async.just(ServerResponse.ok().) //return something valid here!!
-})
+fun <F> hiRoutesKFn(): RouterFn<F, ServerResponseK> = createRouteKFn(GET(BASE_PATH)) { async, request ->
+    val a = ServerResponse.ok().body(Mono.just(request))
+    val b = ServerResponseK.ok().body(async) { blah, b: ReactiveHttpOutputMessage, c -> }
+    ServerResponseK.ok().body(async, request) //return something valid her
+    b// e!
+}
 
 private fun getHello(): Mono<ServerResponse> =
     ServerResponse.ok().body(Mono.just("Hi!"))

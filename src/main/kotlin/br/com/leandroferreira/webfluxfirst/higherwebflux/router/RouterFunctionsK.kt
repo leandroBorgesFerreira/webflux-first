@@ -1,11 +1,11 @@
-package br.com.leandroferreira.webfluxfirst.higherwebflux
+package br.com.leandroferreira.webfluxfirst.higherwebflux.router
 
 import arrow.Kind
 import arrow.effects.typeclasses.Async
+import br.com.leandroferreira.webfluxfirst.higherwebflux.core.ServerResponseK
 import org.springframework.web.reactive.function.server.RequestPredicate
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
-import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 
 fun <T : ServerResponse> createRouteK(
@@ -25,7 +25,7 @@ fun <T : ServerResponse> createRouteK(
 typealias HandlerFn<F, T> = (async: Async<F>, request: ServerRequest) -> Kind<F, T>
 typealias RouterFn<F, T> = (async: Async<F>, request: ServerRequest) -> Kind<F, HandlerFn<F, T>>
 
-fun <F, T : ServerResponse> createRouteKFn(
+fun <F, T : ServerResponseK> createRouteKFn(
     predicate: RequestPredicate,
     handle: HandlerFn<F, T>
 ) : RouterFn<F, T> {

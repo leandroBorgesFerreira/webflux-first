@@ -58,5 +58,8 @@ dependencies {
     implementation "io.arrow-kt:arrow-effects:$arrow"
     implementation "io.arrow-kt:arrow-effects-instances:$arrow"
 
+    implementation "io.arrow-kt:arrow-effects-reactor:$arrow" //optional
+    implementation "io.arrow-kt:arrow-effects-reactor-instances:$arrow" //optional
+
     kapt "io.arrow-kt:arrow-annotations-processor:$arrow"
 }
