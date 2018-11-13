@@ -13,7 +13,7 @@ interface BodyInserterContext {
      * Return the [HttpMessageWriters][HttpMessageWriter] to be used for response body conversion.
      * @return the stream of message writers
      */
-    fun messageWriters(): List<HttpMessageWriter<*>>
+    fun messageWriters(): List<HttpMessageWriterK<*>>
 
     /**
      * Optionally return the [ServerHttpRequest], if present.

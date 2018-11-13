@@ -14,41 +14,41 @@ import org.springframework.lang.Nullable
 import org.springframework.web.reactive.function.UnsupportedMediaTypeException
 import reactor.core.publisher.Mono
 
-private fun <F, P : Publisher<*>, M : ReactiveHttpOutputMessage> writeWithMessageWritersK(
-    async: Async<F>,
+private fun <T> cast(messageWriter: HttpMessageWriterK<*>): HttpMessageWriterK<T> = messageWriter as HttpMessageWriterK<T>
+
+private fun <F, P : Async<F>, M : ReactiveHttpOutputMessage> writeWithMessageWritersK(
     outputMessage: M,
     context: BodyInserterContext,
     body: P,
     bodyType: ResolvableType
-): Kind<F, Void> {
-    return outputMessage.headers.contentType.let { mediaType ->
+): Kind<F, Unit> =
+    outputMessage.headers.contentType.let { mediaType ->
         context.messageWriters()
             .asSequence()
             .filter { messageWriter -> messageWriter.canWrite(bodyType, mediaType) }
             .first()
             .toOption()
             .map { httpMessageWriter -> cast<Any>(httpMessageWriter) }
-            .map { writer -> write(body, bodyType, mediaType, outputMessage, context, writer) }
-            .getOrElse { Mono.error<Void>(unsupportedError(bodyType, context, mediaType)) }
+            .map { writer -> writeK(body, bodyType, mediaType, outputMessage, context, writer) }
+            .getOrElse {
+                body.raiseError(unsupportedError(bodyType, context, mediaType))
+            }
     }
-}
 
-private fun <T> write(
-    input: Publisher<out T>, type: ResolvableType,
-    @Nullable mediaType: MediaType?, message: ReactiveHttpOutputMessage,
-    context: BodyInserterContext, writer: HttpMessageWriter<T>)
-    : Mono<Void> {
-    return context.serverRequest()
+private fun <F, T> writeK(
+    input: Async<F>,
+    type: ResolvableType,
+    @Nullable mediaType: MediaType?,
+    message: ReactiveHttpOutputMessage,
+    context: BodyInserterContext,
+    writer: HttpMessageWriterK<T>
+): Kind<F, Unit> =
+    context.serverRequest()
         .map { request ->
             val response = message as ServerHttpResponse
             writer.write(input, type, type, mediaType, request, response, context.hints())
         }
         .getOrElse { writer.write(input, type, mediaType, message, context.hints()) }
-}
-
-private fun <T> cast(messageWriter: HttpMessageWriter<*>): HttpMessageWriter<T> {
-    return messageWriter as HttpMessageWriter<T>
-}
 
 private fun unsupportedError(
     bodyType: ResolvableType,
@@ -57,7 +57,7 @@ private fun unsupportedError(
 ): UnsupportedMediaTypeException =
     context.messageWriters()
         .asSequence()
-        .flatMap { reader -> reader.writableMediaTypes.asSequence() }
+        .flatMap { reader -> reader.getWritableMediaTypes().asSequence() }
         .toList().let { supportedMediaTypes ->
             UnsupportedMediaTypeException(mediaType, supportedMediaTypes, bodyType)
         }
