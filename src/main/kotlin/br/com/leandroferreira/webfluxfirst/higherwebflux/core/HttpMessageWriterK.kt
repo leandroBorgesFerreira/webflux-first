@@ -12,12 +12,12 @@ import org.springframework.lang.Nullable
 interface HttpMessageWriterK<T> {
     fun getWritableMediaTypes(): List<MediaType>
 
-    fun canWrite(elementType: ResolvableType, @Nullable mediaType: MediaType?): Boolean
+    fun canWrite(elementType: ResolvableType, mediaType: MediaType?): Boolean
 
     fun <F> write(
         inputStream: Async<F>,
         elementType: ResolvableType,
-        @Nullable mediaType: MediaType?,
+        mediaType: MediaType?,
         message: ReactiveHttpOutputMessageK,
         hints: Map<String, Any>
     ): Kind<F, Unit>
@@ -26,7 +26,7 @@ interface HttpMessageWriterK<T> {
         inputStream: Async<F>,
         actualType: ResolvableType,
         elementType: ResolvableType,
-        @Nullable mediaType: MediaType?,
+        mediaType: MediaType?,
         request: ServerHttpRequest,
         response: ServerHttpResponse,
         hints: Map<String, Any>

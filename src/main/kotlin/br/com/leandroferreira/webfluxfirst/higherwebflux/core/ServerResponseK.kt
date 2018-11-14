@@ -2,6 +2,8 @@ package br.com.leandroferreira.webfluxfirst.higherwebflux.core
 
 import arrow.Kind
 import arrow.effects.typeclasses.Async
+import br.com.leandroferreira.webfluxfirst.higherwebflux.core.bodyInserter.BodyInserterKFn
+import br.com.leandroferreira.webfluxfirst.higherwebflux.core.bodyInserter.fromAsync
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -86,3 +88,5 @@ interface BodyBuilderK : HeadersBuilder<BodyBuilderK> {
 
     fun <F> render(async: Async<F>, name: String, model: Map<String, *>): Kind<F, ServerResponseK>
 }
+
+fun <F> BodyBuilderK.body(async: Async<F>) = body(async, fromAsync(async, null))

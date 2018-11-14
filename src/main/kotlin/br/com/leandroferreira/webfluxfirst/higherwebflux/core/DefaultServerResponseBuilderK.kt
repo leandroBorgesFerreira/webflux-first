@@ -2,6 +2,7 @@ package br.com.leandroferreira.webfluxfirst.higherwebflux.core
 
 import arrow.Kind
 import arrow.effects.typeclasses.Async
+import br.com.leandroferreira.webfluxfirst.higherwebflux.core.bodyInserter.BodyInserterKFn
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -83,7 +84,7 @@ class DefaultServerResponseKBuilderK(private val statusCode : Int): BodyBuilderK
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun <F, M : ReactiveHttpOutputMessage> body(async: Async<F>, inserter: BodyInserterKFn<F, M>): Kind<F, ServerResponseK> {
+    override fun <F, M : ReactiveHttpOutputMessageK> body(async: Async<F>, inserter: BodyInserterKFn<F, M>): Kind<F, ServerResponseK> {
         return async.just(BodyInserterResponse()) //Todo: Fix this!!
     }
 

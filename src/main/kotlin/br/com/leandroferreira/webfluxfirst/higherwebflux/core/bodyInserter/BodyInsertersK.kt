@@ -1,9 +1,11 @@
-package br.com.leandroferreira.webfluxfirst.higherwebflux.core
+package br.com.leandroferreira.webfluxfirst.higherwebflux.core.bodyInserter
 
 import arrow.Kind
 import arrow.core.getOrElse
 import arrow.core.toOption
 import arrow.effects.typeclasses.Async
+import br.com.leandroferreira.webfluxfirst.higherwebflux.core.HttpMessageWriterK
+import br.com.leandroferreira.webfluxfirst.higherwebflux.core.ReactiveHttpOutputMessageK
 import org.springframework.core.ResolvableType
 import org.springframework.http.MediaType
 import org.springframework.http.server.reactive.ServerHttpResponse
@@ -15,7 +17,7 @@ private fun <T> cast(messageWriter: HttpMessageWriterK<*>): HttpMessageWriterK<T
 //Todo: This one looks weird. Take a look here in a later moment.
 fun <F, T: Async<F>> fromAsync(async: T, elementClass: Class<T>?) : BodyInserterKFn<F, ReactiveHttpOutputMessageK> = {
     message, context ->
-        writeWithMessageWritersK(message, context, async, ResolvableType.forClass(elementClass))
+    writeWithMessageWritersK(message, context, async, ResolvableType.forClass(elementClass))
 }
 
 private fun <F, P : Async<F>, M : ReactiveHttpOutputMessageK> writeWithMessageWritersK(

@@ -11,9 +11,4 @@ import org.springframework.web.reactive.function.server.ServerResponse
 //
 //}
 
-interface RouterFunctionK<T: ServerResponse> {
-
-    fun <F> route(async: Async<F>, request: ServerRequest): Kind<F, HandlerFunctionK<T>>
-
-}
-
+typealias RouterFn<F, T> = (async: Async<F>, request: ServerRequest) -> Kind<F, HandlerFn<F, T>>

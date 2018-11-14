@@ -1,8 +1,9 @@
-package br.com.leandroferreira.webfluxfirst.higherwebflux.core
+package br.com.leandroferreira.webfluxfirst.higherwebflux.core.bodyInserter
 
 import arrow.Kind
 import arrow.core.Option
 import arrow.effects.typeclasses.Async
+import br.com.leandroferreira.webfluxfirst.higherwebflux.core.HttpMessageWriterK
 import org.springframework.http.ReactiveHttpOutputMessage
 import org.springframework.http.codec.HttpMessageWriter
 import org.springframework.http.server.reactive.ServerHttpRequest
