@@ -4,19 +4,21 @@ import arrow.Kind
 import arrow.core.getOrElse
 import arrow.core.toOption
 import arrow.effects.typeclasses.Async
-import org.reactivestreams.Publisher
 import org.springframework.core.ResolvableType
 import org.springframework.http.MediaType
-import org.springframework.http.ReactiveHttpOutputMessage
-import org.springframework.http.codec.HttpMessageWriter
 import org.springframework.http.server.reactive.ServerHttpResponse
 import org.springframework.lang.Nullable
 import org.springframework.web.reactive.function.UnsupportedMediaTypeException
-import reactor.core.publisher.Mono
 
 private fun <T> cast(messageWriter: HttpMessageWriterK<*>): HttpMessageWriterK<T> = messageWriter as HttpMessageWriterK<T>
 
-private fun <F, P : Async<F>, M : ReactiveHttpOutputMessage> writeWithMessageWritersK(
+//Todo: This one looks weird. Take a look here in a later moment.
+fun <F, T: Async<F>> fromAsync(async: T, elementClass: Class<T>?) : BodyInserterKFn<F, ReactiveHttpOutputMessageK> = {
+    message, context ->
+        writeWithMessageWritersK(message, context, async, ResolvableType.forClass(elementClass))
+}
+
+private fun <F, P : Async<F>, M : ReactiveHttpOutputMessageK> writeWithMessageWritersK(
     outputMessage: M,
     context: BodyInserterContext,
     body: P,
@@ -39,7 +41,7 @@ private fun <F, T> writeK(
     input: Async<F>,
     type: ResolvableType,
     @Nullable mediaType: MediaType?,
-    message: ReactiveHttpOutputMessage,
+    message: ReactiveHttpOutputMessageK,
     context: BodyInserterContext,
     writer: HttpMessageWriterK<T>
 ): Kind<F, Unit> =

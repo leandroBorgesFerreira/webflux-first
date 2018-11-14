@@ -80,7 +80,7 @@ interface BodyBuilderK : HeadersBuilder<BodyBuilderK> {
 
     fun <F> syncBody(async: Async<F>, body: Any): Kind<F,ServerResponseK>
 
-    fun <F, M: ReactiveHttpOutputMessage> body(async: Async<F>, inserter: BodyInserterKFn<F, M>): Kind<F, ServerResponseK>
+    fun <F, M: ReactiveHttpOutputMessageK> body(async: Async<F>, inserter: BodyInserterKFn<F, M>): Kind<F, ServerResponseK>
 
     fun <F> render(async: Async<F>, name: String, vararg modelAttributes: Any): Kind<F, ServerResponseK>
 

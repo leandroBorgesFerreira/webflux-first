@@ -7,7 +7,7 @@ import org.springframework.http.HttpMessage
 import reactor.core.publisher.Mono
 import java.util.function.Supplier
 
-interface ReactiveHttpOutputMessage : HttpMessage {
+interface ReactiveHttpOutputMessageK : HttpMessage {
 
     val isCommitted: Boolean
 

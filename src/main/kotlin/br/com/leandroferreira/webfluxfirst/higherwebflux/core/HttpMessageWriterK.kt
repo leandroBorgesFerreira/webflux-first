@@ -18,7 +18,7 @@ interface HttpMessageWriterK<T> {
         inputStream: Async<F>,
         elementType: ResolvableType,
         @Nullable mediaType: MediaType?,
-        message: ReactiveHttpOutputMessage,
+        message: ReactiveHttpOutputMessageK,
         hints: Map<String, Any>
     ): Kind<F, Unit>
 
