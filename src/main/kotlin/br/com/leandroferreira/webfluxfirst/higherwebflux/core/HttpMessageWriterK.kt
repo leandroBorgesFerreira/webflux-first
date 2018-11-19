@@ -4,10 +4,8 @@ import arrow.Kind
 import arrow.effects.typeclasses.Async
 import org.springframework.core.ResolvableType
 import org.springframework.http.MediaType
-import org.springframework.http.ReactiveHttpOutputMessage
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.http.server.reactive.ServerHttpResponse
-import org.springframework.lang.Nullable
 
 interface HttpMessageWriterK<T> {
     fun getWritableMediaTypes(): List<MediaType>

@@ -6,6 +6,7 @@ import arrow.core.toOption
 import arrow.effects.typeclasses.Async
 import br.com.leandroferreira.webfluxfirst.higherwebflux.core.HttpMessageWriterK
 import br.com.leandroferreira.webfluxfirst.higherwebflux.core.ReactiveHttpOutputMessageK
+import br.com.leandroferreira.webfluxfirst.higherwebflux.utils.BodyInserterKFn
 import org.springframework.core.ResolvableType
 import org.springframework.http.MediaType
 import org.springframework.http.server.reactive.ServerHttpResponse

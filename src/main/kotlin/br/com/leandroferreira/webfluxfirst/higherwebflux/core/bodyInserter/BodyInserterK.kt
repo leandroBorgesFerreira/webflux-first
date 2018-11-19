@@ -30,7 +30,6 @@ interface BodyInserterContext {
         : Kind<F, Unit>
 }
 
-typealias BodyInserterKFn<F, M> = (outputMessage: M, context: BodyInserterContext) -> Kind<F, Unit>
 
 
 

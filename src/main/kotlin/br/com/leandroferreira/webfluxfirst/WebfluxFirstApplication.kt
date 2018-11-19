@@ -1,8 +1,6 @@
 package br.com.leandroferreira.webfluxfirst
 
 import arrow.effects.ForIO
-import arrow.effects.IO
-import arrow.effects.instances.io.async.async
 import br.com.leandroferreira.webfluxfirst.higherwebflux.core.ServerResponseK
 import br.com.leandroferreira.webfluxfirst.higherwebflux.router.RouterFn
 import org.springframework.http.server.reactive.HttpHandler

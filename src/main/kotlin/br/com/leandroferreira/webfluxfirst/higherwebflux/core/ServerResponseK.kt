@@ -2,8 +2,8 @@ package br.com.leandroferreira.webfluxfirst.higherwebflux.core
 
 import arrow.Kind
 import arrow.effects.typeclasses.Async
-import br.com.leandroferreira.webfluxfirst.higherwebflux.core.bodyInserter.BodyInserterKFn
 import br.com.leandroferreira.webfluxfirst.higherwebflux.core.bodyInserter.fromAsync
+import br.com.leandroferreira.webfluxfirst.higherwebflux.utils.BodyInserterKFn
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -27,6 +27,8 @@ interface ServerResponseK {
         fun status(status: HttpStatus): BodyBuilderK {
             return DefaultServerResponseKBuilderK(status)
         }
+
+        fun notFound(): HeadersBuilder<*> = status(HttpStatus.NOT_FOUND)
     }
 
     fun statusCode(): HttpStatus
