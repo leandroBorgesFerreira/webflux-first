@@ -6,6 +6,7 @@ import br.com.leandroferreira.webfluxfirst.higherwebflux.core.ServerResponseK
 import br.com.leandroferreira.webfluxfirst.higherwebflux.core.serverRequest.DefaultServerRequestK
 import br.com.leandroferreira.webfluxfirst.higherwebflux.core.serverRequest.ServerRequestK
 import br.com.leandroferreira.webfluxfirst.higherwebflux.exceptions.RouteNotFoundException
+import br.com.leandroferreira.webfluxfirst.higherwebflux.utils.RequestPredicateFn
 import br.com.leandroferreira.webfluxfirst.higherwebflux.utils.WebHandlerFn
 import org.springframework.http.server.reactive.HttpHandler
 import org.springframework.web.reactive.function.server.HandlerStrategies
@@ -20,11 +21,11 @@ typealias HandlerFn<F, T> = (async: Async<F>, request: ServerRequestK) -> Kind<F
 private val REQUEST_ATTRIBUTE = "${RouterFunctions::class.java.name}.request"
 
 fun <F, T : ServerResponseK> createRouteKFn(
-    predicate: RequestPredicate,
+    predicate: RequestPredicateFn,
     handle: HandlerFn<F, T>
 ) : RouterFn<F, T> {
     return { apError, request ->
-        if(predicate.test(request)) {
+        if(predicate(request)) {
             apError.just(handle)
         } else {
             apError.raiseError(Unit)
