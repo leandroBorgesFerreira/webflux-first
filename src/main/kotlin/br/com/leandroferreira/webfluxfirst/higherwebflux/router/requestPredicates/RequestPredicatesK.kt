@@ -24,5 +24,6 @@ private fun RequestPredicateFn.and(second: RequestPredicateFn) : RequestPredicat
 }
 
 private val getHttp: RequestPredicateFn = ::httpMethodPredicate.partially1(setOf(HttpMethod.GET))
+fun path(pattern: String) : RequestPredicateFn = ::pathPredicate.partially1(pattern)
 
-fun GetK(pattern: String) : RequestPredicateFn = getHttp.and(::pathPredicate.partially1(pattern))
+fun GetK(pattern: String) : RequestPredicateFn = getHttp.and(path(pattern))

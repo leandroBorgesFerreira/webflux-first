@@ -3,6 +3,8 @@ package br.com.leandroferreira.webfluxfirst
 import arrow.effects.ForIO
 import br.com.leandroferreira.webfluxfirst.higherwebflux.core.ServerResponseK
 import br.com.leandroferreira.webfluxfirst.higherwebflux.router.RouterFn
+import br.com.leandroferreira.webfluxfirst.higherwebflux.router.nest
+import br.com.leandroferreira.webfluxfirst.higherwebflux.router.requestPredicates.path
 import org.springframework.http.server.reactive.HttpHandler
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter
 import org.springframework.web.reactive.function.server.HandlerFunction
@@ -19,7 +21,8 @@ fun main(args: Array<String>) {
     val routerFunction : RouterFunction<ServerResponse> =
         RouterFunctions.nest(RequestPredicates.path("/api"), hiRoutes())
 
-    val routerFn : RouterFn<ForIO, ServerResponseK> = hiRoutesKFn()
+    val routerFn : RouterFn<ForIO, ServerResponseK> = nest(path("/api"), hiRoutesKFn())
+
 
     val httpHandler: HttpHandler = RouterFunctions.toHttpHandler(routerFunction)
     val adapter = ReactorHttpHandlerAdapter(httpHandler)

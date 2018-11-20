@@ -1,5 +1,7 @@
 package br.com.leandroferreira.webfluxfirst
 
+import arrow.Kind
+import arrow.effects.typeclasses.Async
 import br.com.leandroferreira.webfluxfirst.higherwebflux.core.ServerResponseK
 import br.com.leandroferreira.webfluxfirst.higherwebflux.core.body
 import br.com.leandroferreira.webfluxfirst.higherwebflux.router.RouterFn
@@ -21,6 +23,10 @@ fun <F> hiRoutesKFn(): RouterFn<F, ServerResponseK> = createRouteKFn(GetK(BASE_P
 }
 
 private fun getHello(): Mono<ServerResponse> = ServerResponse.ok().body(Mono.just("Hi!"))
+
+private fun <F> getHelloK(async: Async<F>): Kind<F, ServerResponseK> {
+    ServerResponseK.ok().b
+}
 
 //fun hiRoutesK() = createRouteK(GET(BASE_PATH), object : HandlerFunctionK<ServerResponse> {
 //    override fun <F> handle(async: Async<F>, request: ServerRequest): Kind<F, ServerResponse> =

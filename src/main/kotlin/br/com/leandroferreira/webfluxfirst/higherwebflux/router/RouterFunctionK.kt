@@ -5,6 +5,7 @@ import arrow.effects.typeclasses.Async
 import arrow.typeclasses.ApplicativeError
 import arrow.typeclasses.MonadError
 import br.com.leandroferreira.webfluxfirst.higherwebflux.core.serverRequest.ServerRequestK
+import br.com.leandroferreira.webfluxfirst.higherwebflux.utils.HandlerFn
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 

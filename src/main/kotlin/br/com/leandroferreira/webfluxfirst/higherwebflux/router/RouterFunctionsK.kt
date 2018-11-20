@@ -1,30 +1,33 @@
 package br.com.leandroferreira.webfluxfirst.higherwebflux.router
 
-import arrow.Kind
 import arrow.effects.typeclasses.Async
 import br.com.leandroferreira.webfluxfirst.higherwebflux.core.ServerResponseK
 import br.com.leandroferreira.webfluxfirst.higherwebflux.core.serverRequest.DefaultServerRequestK
 import br.com.leandroferreira.webfluxfirst.higherwebflux.core.serverRequest.ServerRequestK
 import br.com.leandroferreira.webfluxfirst.higherwebflux.exceptions.RouteNotFoundException
+import br.com.leandroferreira.webfluxfirst.higherwebflux.utils.HandlerFn
 import br.com.leandroferreira.webfluxfirst.higherwebflux.utils.RequestPredicateFn
 import br.com.leandroferreira.webfluxfirst.higherwebflux.utils.WebHandlerFn
 import org.springframework.http.server.reactive.HttpHandler
+import org.springframework.web.reactive.function.server.HandlerFunction
 import org.springframework.web.reactive.function.server.HandlerStrategies
 import org.springframework.web.reactive.function.server.RequestPredicate
+import org.springframework.web.reactive.function.server.RouterFunction
 import org.springframework.web.reactive.function.server.RouterFunctions
 import org.springframework.web.reactive.function.server.RouterFunctions.REQUEST_ATTRIBUTE
+import org.springframework.web.reactive.function.server.ServerRequest
+import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder
-
-typealias HandlerFn<F, T> = (async: Async<F>, request: ServerRequestK) -> Kind<F, T>
+import reactor.core.publisher.Mono
 
 private val REQUEST_ATTRIBUTE = "${RouterFunctions::class.java.name}.request"
 
 fun <F, T : ServerResponseK> createRouteKFn(
     predicate: RequestPredicateFn,
     handle: HandlerFn<F, T>
-) : RouterFn<F, T> {
-    return { apError, request ->
+) : RouterFn<F, T> =
+    { apError, request ->
         if(predicate(request)) {
             apError.just(handle)
         } else {
@@ -32,7 +35,33 @@ fun <F, T : ServerResponseK> createRouteKFn(
         }
     }
 
-}
+fun <F, T : ServerResponseK> nest(predicate: RequestPredicateFn, routerFunction: RouterFn<F, T>): RouterFn<F, T> =
+    { async, request ->
+        if(predicate(request)) {
+            routerFunction(async, request)
+        } else {
+            async.raiseError(Unit)
+        }
+    }
+
+//override fun route(serverRequest: ServerRequest): Mono<HandlerFunction<T>> {
+//    return this.predicate.nest(serverRequest)
+//        .map({ nestedRequest ->
+//            if (logger.isTraceEnabled()) {
+//                val logPrefix = serverRequest.exchange().logPrefix
+//                logger.trace(logPrefix + String.format("Matched nested %s", this.predicate))
+//            }
+//            this.routerFunction.route(nestedRequest)
+//                .doOnNext({ match ->
+//                    if (nestedRequest !== serverRequest) {
+//                        serverRequest.attributes().clear()
+//                        serverRequest.attributes()
+//                            .putAll(nestedRequest.attributes())
+//                    }
+//                })
+//        }
+//        ).orElseGet(Supplier<Mono<HandlerFunction<T>>> { Mono.empty() })
+//}
 
 fun <F> toHttpHandler(routerFn: RouterFn<F, *>): HttpHandler = toHttpHandler(routerFn, HandlerStrategies.withDefaults())
 
@@ -79,6 +108,7 @@ fun <F, T> toWebHandler(async: Async<F>, routerFunction: RouterFn<F, *>, strateg
 //            }
     }
 }
+
 
 private fun addAttributes(exchange: ServerWebExchange, request: ServerRequestK) {
     val attributes = exchange.attributes
