@@ -9,17 +9,11 @@ import br.com.leandroferreira.webfluxfirst.higherwebflux.utils.HandlerFn
 import br.com.leandroferreira.webfluxfirst.higherwebflux.utils.RequestPredicateFn
 import br.com.leandroferreira.webfluxfirst.higherwebflux.utils.WebHandlerFn
 import org.springframework.http.server.reactive.HttpHandler
-import org.springframework.web.reactive.function.server.HandlerFunction
 import org.springframework.web.reactive.function.server.HandlerStrategies
-import org.springframework.web.reactive.function.server.RequestPredicate
-import org.springframework.web.reactive.function.server.RouterFunction
 import org.springframework.web.reactive.function.server.RouterFunctions
 import org.springframework.web.reactive.function.server.RouterFunctions.REQUEST_ATTRIBUTE
-import org.springframework.web.reactive.function.server.ServerRequest
-import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder
-import reactor.core.publisher.Mono
 
 private val REQUEST_ATTRIBUTE = "${RouterFunctions::class.java.name}.request"
 
@@ -63,7 +57,8 @@ fun <F, T : ServerResponseK> nest(predicate: RequestPredicateFn, routerFunction:
 //        ).orElseGet(Supplier<Mono<HandlerFunction<T>>> { Mono.empty() })
 //}
 
-fun <F> toHttpHandler(routerFn: RouterFn<F, *>): HttpHandler = toHttpHandler(routerFn, HandlerStrategies.withDefaults())
+fun <F> toHttpHandler(async: Async<F>, routerFn: RouterFn<F, *>): HttpHandler =
+  toHttpHandler(async, routerFn, HandlerStrategies.withDefaults())
 
 fun <F> toHttpHandler(async: Async<F>, routerFunction: RouterFn<F, *>, strategies: HandlerStrategies): HttpHandler {
     val webHandler = toWebHandler(async, routerFunction, strategies)
